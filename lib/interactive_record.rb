@@ -69,14 +69,23 @@ class InteractiveRecord
   end
 
 
-  def self.find_by(attribute)
-    sql = <<-SQL
-      SELECT *
-      FROM #{self.table_name}
-      WHERE name = ?
-      OR grade = ?
-    SQL
+  # def self.find_by(attribute)
+  #   sql = <<-SQL
+  #     SELECT *
+  #     FROM #{self.table_name}
+  #     WHERE name = ?
+  #     OR grade = ?
+  #   SQL
+  #
+  #   DB[:conn].execute(sql, attribute[:name], attribute[:grade])
+  # end
 
-    DB[:conn].execute(sql, attribute[:name], attribute[:grade])
-  end
+
+  def self.find_by(attribute_hash)
+    binding.pry
+   value = attribute_hash.values.first
+   formatted_value = value.class == Fixnum ? value : "'#{value}'"
+   sql = "SELECT * FROM #{self.table_name} WHERE #{attribute_hash.keys.first} = #{formatted_value}"
+   DB[:conn].execute(sql)
+ end
 end
